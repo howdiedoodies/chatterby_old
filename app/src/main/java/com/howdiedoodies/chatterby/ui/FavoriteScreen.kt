@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.howdiedoodies.chatterby.data.Favorite
 import com.howdiedoodies.chatterby.viewmodel.FavoriteViewModel
-import com.howdiedoodies.chatterby.ui.FavoriteItem
 
 @Composable
 fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel) {
@@ -46,3 +45,28 @@ fun FavoriteScreen(navController: NavController, viewModel: FavoriteViewModel) {
     }
 }
 
+@Composable
+fun FavoriteItem(favorite: Favorite, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = favorite.username,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = if (favorite.isOnline) "LIVE" else "Offline",
+                color = if (favorite.isOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            )
+        }
+    }
+}

@@ -25,9 +25,11 @@ class WebAppInterface(
     @JavascriptInterface
     fun importFavorites(usernames: String) {
         scope.launch {
-            usernames.split(",").forEach {
-                favoriteDao.insert(Favorite(username = it))
-            }
+            usernames.split(",")
+                .filter { it.isNotBlank() }
+                .forEach {
+                    favoriteDao.insert(Favorite(username = it))
+                }
         }
     }
 }
@@ -35,14 +37,14 @@ class WebAppInterface(
 @Composable
 fun LoginScreen(navController: NavController) {
     AndroidView(factory = {
-        val favoriteDao = AppDatabase.getDatabase(it).favoriteDao()
+        val favoriteDao = AppDatabase.getDatabase(it.context).favoriteDao()
         WebView(it).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             settings.javaScriptEnabled = true
-            addJavascriptInterface(WebAppInterface(it, favoriteDao), "Android")
+            addJavascriptInterface(WebAppInterface(it.context, favoriteDao), "Android")
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
