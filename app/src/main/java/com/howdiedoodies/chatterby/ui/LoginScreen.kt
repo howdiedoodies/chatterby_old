@@ -35,7 +35,7 @@ class WebAppInterface(
 @Composable
 fun LoginScreen(navController: NavController) {
     AndroidView(factory = {
-        val favoriteDao = AppDatabase.getDatabase(it.context).favoriteDao()
+        val favoriteDao = AppDatabase.getDatabase(it).favoriteDao()
         WebView(it).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
