@@ -1,6 +1,5 @@
 package com.howdiedoodies.chatterby.ui
 
-import android.content.Context
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class WebAppInterface(
     private val favoriteDao: FavoriteDao
-    ) {
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     @JavascriptInterface
