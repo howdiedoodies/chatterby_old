@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.howdiedoodies.chatterby.R
+import com.howdiedoodies.chatterby.ui.SettingsScreen
 
 @Composable
 fun App() {
@@ -59,6 +60,7 @@ fun App() {
                 RoomScreen(navController, backStackEntry.arguments?.getString("username") ?: "")
             }
             composable("login") { LoginScreen(navController) }
+            composable("settings") { SettingsScreen(navController) }
         }
     }
 }
