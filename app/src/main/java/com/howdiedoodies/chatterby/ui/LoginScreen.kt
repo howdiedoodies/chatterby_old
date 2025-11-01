@@ -17,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class WebAppInterface(
-    private val context: Context,
     private val favoriteDao: FavoriteDao
     ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -44,7 +43,7 @@ fun LoginScreen(navController: NavController) {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
             settings.javaScriptEnabled = true
-            addJavascriptInterface(WebAppInterface(it.context, favoriteDao), "Android")
+            addJavascriptInterface(WebAppInterface(favoriteDao), "Android")
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
