@@ -1,9 +1,8 @@
 package com.howdiedoodies.chatterby.data
 
-import com.ditchoom.buffer.toBuffer
-import com.ditchoom.socket.NetworkCapabilities
+import com.ditchoom.websocket.DataRead
+import com.ditchoom.websocket.WebSocketClient
 import com.ditchoom.websocket.WebSocketConnectionOptions
-import com.ditchoom.websocket.client.WebSocketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,22 +21,22 @@ class ChatService {
 
     fun connect(url: String, authMessage: String) {
         scope.launch {
-            if (!NetworkCapabilities.isNetworkAvailable()) return@launch
             try {
                 val uri = URI(url)
                 val connectionOptions = WebSocketConnectionOptions(
-                    uri.host,
-                    uri.port,
-                    uri.path,
+                    name = uri.host,
+                    port = uri.port,
+                    websocketEndpoint = uri.path,
                     tls = uri.scheme == "wss"
                 )
-                webSocket = WebSocketClient(connectionOptions)
-                webSocket?.write(authMessage.toBuffer())
+                webSocket = WebSocketClient.Companion.allocate(connectionOptions)
+                webSocket?.connect()
+                webSocket?.write(authMessage)
 
                 while (true) {
-                    val message = webSocket?.read()?.readUtf8()
-                    message?.let {
-                        _messages.value = _messages.value + it
+                    val message = webSocket?.read()
+                    if (message is DataRead.StringDataRead) {
+                        _messages.value = _messages.value + message.string
                     }
                 }
             } catch (e: Exception) {
@@ -54,7 +53,7 @@ class ChatService {
 
     fun sendMessage(message: String) {
         scope.launch {
-            webSocket?.write(message.toBuffer())
+            webSocket?.write(message)
         }
     }
 }
