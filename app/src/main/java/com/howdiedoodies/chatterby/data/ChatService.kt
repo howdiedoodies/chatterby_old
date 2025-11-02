@@ -1,13 +1,16 @@
 package com.howdiedoodies.chatterby.data
 
-import com.ditchoom.websocket.WebSocketClient
+import com.ditchoom.buffer.toBuffer
+import com.ditchoom.socket.NetworkCapabilities
 import com.ditchoom.websocket.WebSocketConnectionOptions
+import com.ditchoom.websocket.client.WebSocketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.net.URI
 
 class ChatService {
 
@@ -19,21 +22,22 @@ class ChatService {
 
     fun connect(url: String, authMessage: String) {
         scope.launch {
+            if (!NetworkCapabilities.isNetworkAvailable()) return@launch
             try {
+                val uri = URI(url)
                 val connectionOptions = WebSocketConnectionOptions(
-                    name = url,
-                    port = 443,
-                    websocketEndpoint = "/",
-                    tls = true
+                    hostname = uri.host,
+                    port = uri.port,
+                    websocketEndpoint = uri.path,
+                    tls = uri.scheme == "wss"
                 )
-                webSocket = WebSocketClient.allocate(connectionOptions)
-                webSocket?.connect()
-                webSocket?.write(authMessage)
+                webSocket = WebSocketClient(connectionOptions)
+                webSocket?.write(authMessage.toBuffer())
 
                 while (true) {
-                    val message = webSocket?.read()
-                    if (message is com.ditchoom.buffer.DataRead.StringDataRead) {
-                        _messages.value = _messages.value + message.string
+                    val message = webSocket?.read()?.readUtf8()
+                    message?.let {
+                        _messages.value = _messages.value + it
                     }
                 }
             } catch (e: Exception) {
@@ -50,7 +54,7 @@ class ChatService {
 
     fun sendMessage(message: String) {
         scope.launch {
-            webSocket?.write(message)
+            webSocket?.write(message.toBuffer())
         }
     }
 }

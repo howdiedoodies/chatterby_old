@@ -29,8 +29,7 @@ fun App() {
                 val currentDestination = navBackStackEntry?.destination
                 val items = listOf(
                     Screen.Favorites,
-                    Screen.Search,
-                    Screen.Chat
+                    Screen.Search
                 )
                 items.forEach { screen ->
                     NavigationBarItem(
@@ -55,7 +54,6 @@ fun App() {
         NavHost(navController, startDestination = Screen.Favorites.route, Modifier.padding(innerPadding)) {
             composable(Screen.Favorites.route) { FavoriteScreen(navController, favoriteViewModel) }
             composable(Screen.Search.route) { SearchScreen(navController, favoriteViewModel = favoriteViewModel) }
-            composable(Screen.Chat.route) { ChatScreen(navController) }
             composable("room/{username}") { backStackEntry ->
                 RoomScreen(navController, backStackEntry.arguments?.getString("username") ?: "")
             }
@@ -68,5 +66,4 @@ fun App() {
 sealed class Screen(val route: String, val icon: Int) {
     object Favorites : Screen("Favorites", R.drawable.ic_favorite)
     object Search : Screen("Search", R.drawable.ic_search)
-    object Chat : Screen("Chat", R.drawable.ic_chat)
 }
