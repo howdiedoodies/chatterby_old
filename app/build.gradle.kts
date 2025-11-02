@@ -89,7 +89,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("com.ditchoom:websocket:0.1.1")
+    implementation("com.ditchoom:websocket-android:1.1.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
