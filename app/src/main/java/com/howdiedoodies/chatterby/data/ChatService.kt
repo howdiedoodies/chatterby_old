@@ -26,9 +26,9 @@ class ChatService {
             try {
                 val uri = URI(url)
                 val connectionOptions = WebSocketConnectionOptions(
-                    hostname = uri.host,
-                    port = uri.port,
-                    websocketEndpoint = uri.path,
+                    uri.host,
+                    uri.port,
+                    uri.path,
                     tls = uri.scheme == "wss"
                 )
                 webSocket = WebSocketClient(connectionOptions)

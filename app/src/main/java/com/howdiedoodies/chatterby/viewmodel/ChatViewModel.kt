@@ -38,8 +38,8 @@ class ChatViewModel : ViewModel() {
             .launchIn(viewModelScope)
     }
 
-    fun connect(roomName: String) {
-        chatService.connect(roomName)
+    fun connect(url: String, authMessage: String) {
+        chatService.connect(url, authMessage)
     }
 
     fun onMessageChanged(message: String) {

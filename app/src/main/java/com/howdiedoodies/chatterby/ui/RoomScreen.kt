@@ -1,6 +1,5 @@
 package com.howdiedoodies.chatterby.ui
 
-import android.content.Context
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
