@@ -17,20 +17,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.howdiedoodies.chatterby.viewmodel.ChatViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(navController: NavController, viewModel: com.howdiedoodies.chatterby.viewmodel.ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun ChatScreen(navController: NavController, roomName: String, viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(roomName) {
+        viewModel.connect(roomName)
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Chat Room") })
+            TopAppBar(title = { Text(roomName) })
         },
         bottomBar = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -39,7 +45,7 @@ fun ChatScreen(navController: NavController, viewModel: com.howdiedoodies.chatte
                 }
                 TextField(
                     value = uiState.currentMessage,
-                    onValueChange = { viewModel.onMessageChanged(it) },
+                    onValue-Change = { viewModel.onMessageChanged(it) },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text("Type a message") }
                 )

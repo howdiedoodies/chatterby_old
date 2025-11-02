@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class FavoriteViewModel(application: Application) : AndroidViewModel(application) {
     private val favoriteDao = AppDatabase.getDatabase(application).favoriteDao()
-    val favorites: StateFlow<List<Favorite>> = favoriteDao.getAll().stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val favorites: StateFlow<List<Favorite>> = favoriteDao.getAll().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _isRefreshing = kotlinx.coroutines.flow.MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 

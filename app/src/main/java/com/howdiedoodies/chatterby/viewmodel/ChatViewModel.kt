@@ -2,9 +2,12 @@ package com.howdiedoodies.chatterby.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.howdiedoodies.chatterby.data.ChatService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -20,15 +23,23 @@ class ChatViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
+    private val chatService = ChatService()
+
     init {
-        // Add some mock messages for display
-        _uiState.value = ChatUiState(
-            messages = listOf(
-                ChatMessage("User1", "Hello!"),
-                ChatMessage("User2", "Hi there! How are you?"),
-                ChatMessage("User1", "I'm good, thanks! This is a mock chat.")
-            )
-        )
+        chatService.messages
+            .onEach { messages ->
+                _uiState.update {
+                    it.copy(messages = messages.map {
+                        val parts = it.split(":")
+                        ChatMessage(parts.first(), parts.last())
+                    })
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun connect(roomName: String) {
+        chatService.connect(roomName)
     }
 
     fun onMessageChanged(message: String) {
@@ -38,12 +49,9 @@ class ChatViewModel : ViewModel() {
     fun sendMessage() {
         if (_uiState.value.currentMessage.isBlank()) return
 
-        val newMessage = ChatMessage("Me", _uiState.value.currentMessage)
+        chatService.sendMessage(_uiState.value.currentMessage)
         _uiState.update {
-            it.copy(
-                messages = it.messages + newMessage,
-                currentMessage = ""
-            )
+            it.copy(currentMessage = "")
         }
     }
 }

@@ -30,7 +30,7 @@ class SearchViewModel : ViewModel() {
         viewModelScope.launch {
             if (_uiState.value.query.isNotBlank()) {
                 try {
-                    val searchResult = NetworkModule.api.search(_uiState.value.query)
+                    val searchResult = NetworkModule.api.search(query = _uiState.value.query, usernames = null)
                     _uiState.value = _uiState.value.copy(results = searchResult.results)
                 } catch (e: Exception) {
                     // Handle network errors
